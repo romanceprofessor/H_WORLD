@@ -17,7 +17,7 @@ public class Game {
 		comNumber = (int)(Math.random()*100)+1;
 		
 		while(a==true) {
-			System.out.println("숫자를 입력하세요");
+			System.out.println("숫자를 입력하세요(1~100)");
 			userNumber = sc.nextInt();
 			if(userNumber!=comNumber) {
 				if(userNumber<comNumber) {
