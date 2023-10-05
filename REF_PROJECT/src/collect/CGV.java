@@ -7,54 +7,54 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HangzhouAsianGame {
+public class CGV {
 	
 	List eventList;
 	
-	public HangzhouAsianGame() {
+	public CGV() {
 		eventList = new ArrayList();
 	}
 	
-	void setESports() {
-		Schedule sch = new Schedule();
-		sch.setDate("9월 24일 (일)");
-		sch.setTime("10:00");
-		sch.setTitle("FIFA 온라인");
-		
+	void setoph() {
 		List list = new ArrayList();
 		Map map = new HashMap();
 		map.put("date", "9월24일(일)");
-		map.put("time", "10:00");
-		map.put("title", "FIFA 온라인");
+		map.put("time", "11:30");
+		map.put("title", "오펜하이머");
 		
 		
 		list.add(map);
 		
 		map = new HashMap();
 		map.put("date", "9월26일(화)");
-		map.put("time", "10:00");
-		map.put("title", "League Of Legend");
+		map.put("time", "12:40");
+		map.put("title", "오펜하이머");
 		list.add(map);
 		
 		Map eMap = new HashMap();
-		eMap.put("eSports", list);
+		eMap.put("oph", list);
 		
 		eventList.add(eMap);
 		
 	}
 	
-	void setCycle() {
+	void setSuger() {
+		List list = new ArrayList();
 		
 		Map map = new HashMap();
 		map.put("date", "10월1일(일)");
-		map.put("time", "11:00");
-		map.put("title", "Cycle");
+		map.put("time", "11:20");
+		map.put("title", "달짝지근해");
+		list.add(map);
 		
-		List list = new ArrayList();
+		map = new HashMap();
+		map.put("date", "10월4일(수)");
+		map.put("time", "15:20");
+		map.put("title", "달짝지근해");
 		list.add(map);
 		
 		Map eMap = new HashMap();
-		eMap.put("cycle", list);
+		eMap.put("suger", list);
 		
 		eventList.add(eMap);
 		
@@ -65,20 +65,15 @@ public class HangzhouAsianGame {
 		outter : for ( int i = 0 ; i < eventList.size() ; i++ ) {
 			Map map = (Map)eventList.get(i);
 			Set set = map.keySet();
-			
 			Iterator ite = set.iterator();
-			
 			while ( ite.hasNext() ) {
-				
 				String name = (String)ite.next();
 				if ( event.equals(name) ) {
-					
 					resultList = (List)map.get(name);
 					break outter;
 				}
 			}
 		}
-		
 		return resultList;
 	}
 	
