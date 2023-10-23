@@ -102,7 +102,69 @@ public class Board {
 	}
 
 	void fixBoard() {
+		List list = new ArrayList();
+		String title = null;
 
+		String sql = "SELECT BOARD_TITLE,BOARD_CONTENT FROM BOARD";
+
+		try {
+			ps = run.co.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				list.add(rs.getString("BOARD_TITLE"));
+			}
+			if (list.size() == 0) {
+				System.out.println("수정할 게시글이 존재하지 않습니다.");
+				lim.board();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println("[" + (i + 1) + "]" + list.get(i));
+		}
+
+		System.out.println("[" + (list.size() + 1) + "]뒤로 가기");
+
+		int input = (sc.nextInt() - 1);
+		sc.nextLine();
+		if (input == list.size()) {
+			lim.board();
+		} else if (input != list.size()) {
+			title = (String) list.get(input);
+
+			System.out.printf("수정할 제목 입력: ");
+
+			String settitle = sc.nextLine();
+			String content = "";
+
+			System.out.println("수정할 내용을 입력해주세요.\n작성을 마치고 싶을 경우에 '종료'라고 입력해주세요.");
+			String sentence;
+			while (true) {
+				sentence = sc.nextLine();
+				if (sentence.contains("종료")) {
+					break;
+				}
+				content += sentence + "\n";
+			}
+			content.replace("종료", "");
+			content = content.trim();
+
+			sql = "UPDATE BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? WHERE BOARD_TITLE = '" + title + "'";
+
+			try {
+				ps = run.co.prepareStatement(sql);
+				ps.setString(1, settitle);
+
+				ps.setString(2, content);
+
+				int rs = ps.executeUpdate();
+				System.out.println(rs + "건이 정상적으로 수정되었습니다.");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	void deleteBoard() {

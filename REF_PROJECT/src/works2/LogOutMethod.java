@@ -17,28 +17,34 @@ public class LogOutMethod {
 		System.out.println("비밀번호를 입력해주세요.");
 		String pw = sc.nextLine();
 
-		String sql = "" + "SELECT PASSWORD FROM WORKS WHERE PRO_EMAIL = " + "'" + id + "'";
+		String sql = "" + "SELECT * FROM WORKS WHERE PRO_EMAIL IN ?";
 		try {
 			ps = run.co.prepareStatement(sql);
+			ps.setString(1, id);
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				if (rs.getString("PASSWORD").equals(pw)) {
-					String sql2 = "" + "SELECT PRO_NAME FROM WORKS WHERE PRO_EMAIL = " + "'" + id + "'";
-					ps = run.co.prepareStatement(sql2);
-					ResultSet rs2 = ps.executeQuery();
-					rs2.next();
-					run.name = rs2.getString(1);
-					System.out.println(run.name);
-					System.out.println("로그인 성공");
+				if (rs.getString("PRO_EMAIL").equals(id)) {
+					if (rs.getString("PASSWORD").equals(pw)) {
+						String sql2 = "" + "SELECT PRO_NAME FROM WORKS WHERE PRO_EMAIL = " + "'" + id + "'";
+						ps = run.co.prepareStatement(sql2);
+						ResultSet rs2 = ps.executeQuery();
+						rs2.next();
+						run.name = rs2.getString(1);
+						System.out.println(run.name);
+						System.out.println("로그인 성공");
 
-					String sql3 = "UPDATE CONNECTION SET STATUS=1 WHERE PRO_NAME='" + run.name + "'";
-					ps = run.co.prepareStatement(sql3);
-					ps.executeQuery();
-					run.connect();
-				} else {
-					System.out.println("로그인 정보가 일치하지 않습니다.");
+						String sql3 = "UPDATE CONNECTION SET STATUS=1 WHERE PRO_NAME='" + run.name + "'";
+						ps = run.co.prepareStatement(sql3);
+						ps.executeQuery();
+						run.connect();
+					} else if (rs.getString("PASSWORD").equals(pw) == false) {
+						System.out.println("비밀번호가 일치하지 않습니다.");
+					}
 				}
+			}
+			else if (rs.next() == false) {
+				System.out.println("아이디가 일치하지 않습니다.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
