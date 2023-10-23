@@ -2,8 +2,10 @@ package starbucksproj;
 
 public class Starbucks {
 	int coffeeNum ;
+	int coffee;
 	public Starbucks(int a) {
 		coffeeNum = a;
+		coffee = 200-a;
 	}
 
 	
