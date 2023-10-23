@@ -1,11 +1,6 @@
 package works2;
 
-import java.sql.Connection;
-
-import java.sql.DriverManager;
-
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -102,58 +97,12 @@ public class Board {
 			e.printStackTrace();
 		}
 
-		System.out.println("[제목]" + title + "\n[내용]" + content + "\n[작성자]" + writer + "\n[작성시간]" + date);
+		System.out.println("[제목]" + title + "\n[내용]\n" + content + "\n[작성자]" + writer + "\n[작성시간]" + date);
 
 	}
 
 	void fixBoard() {
-		List list = new ArrayList();
-		String title = null;
 
-		String sql = "SELECT BOARD_TITLE,BOARD_CONTENT FROM BOARD";
-
-		try {
-			ps = run.co.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				list.add(rs.getString("BOARD_TITLE"));
-			}
-			if (list.size() == 0) {
-				System.out.println("수정할 게시글이 존재하지 않습니다.");
-				lim.board();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println("[" + (i + 1) + "]" + list.get(i));
-		}
-		int input = (sc.nextInt() - 1);
-		sc.nextLine();
-		title = (String) list.get(input);
-
-		System.out.printf("수정할 제목 입력: ");
-		
-		String settitle = sc.next();			
-		
-		System.out.printf("수정할 내용 입력: ");
-		
-		String content = sc.next();
-		
-		sql = "UPDATE BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? WHERE BOARD_TITLE = '"+title+"'";
-
-		try {
-			ps = run.co.prepareStatement(sql);
-			ps.setString(1, settitle);
-
-			ps.setString(2, content);
-		
-			int rs = ps.executeUpdate();
-			System.out.println(rs+"건이 정상적으로 수정되었습니다.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	void deleteBoard() {
