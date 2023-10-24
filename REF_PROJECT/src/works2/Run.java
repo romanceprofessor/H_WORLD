@@ -1,6 +1,5 @@
 package works2;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,7 +26,6 @@ public class Run {
 				lo.main();
 			}
 		}
-
 	}
 
 	static void basic() {

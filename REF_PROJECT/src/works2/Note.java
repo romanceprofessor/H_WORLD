@@ -11,9 +11,9 @@ import java.util.Scanner;
 
 public class Note {
 
+	Scanner sc = new Scanner(System.in);
 	static Run run = new Run();
 	static LogInMethod lim = new LogInMethod();
-	Scanner sc = new Scanner(System.in);
 	PreparedStatement ps;
 
 	String from = null;
@@ -22,9 +22,30 @@ public class Note {
 	int check = 0;
 	String content = "";
 
-	void writeNote() {
+	void writeNote() {		
+		
 		System.out.println("수신자 이름을 정확하게 입력해주세요.");
 		to = sc.nextLine();
+		
+		String sql2=""+"SELECT * FROM WORKS WHERE PRO_NAME IN ?";
+		try {
+			ps=run.co.prepareStatement(sql2);
+			ps.setString(1, to);
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) {
+				
+			}
+			else if(rs.next()==false)
+			{
+				System.out.println("존재하지 않는 수신자 이름입니다.");
+				return;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//쪽지 수신자가 데이터베이스에 존재하는지 여부 판단
+		
+		
 		System.out.println("내용을 입력해주세요.\n작성을 마치고 싶을 경우에 '종료'라고 입력해주세요.");
 		String sentence;
 		while (true) {
@@ -52,12 +73,14 @@ public class Note {
 
 			ps.executeUpdate();
 			System.out.println("정상적으로 발송되었습니다.");
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	void readNote() {
+		
 		List<NoteFrame> list = new ArrayList<NoteFrame>();
 		int check = 0;
 
@@ -88,7 +111,10 @@ public class Note {
 					check++;
 				}
 			}
-			System.out.println("확인하지 않은 쪽지가 " + check + "통 있습니다.");
+			if(list.size()>0)
+			{
+				System.out.println("확인하지 않은 쪽지가 " + check + "통 있습니다.");				
+			}
 
 			for (int i = 0; i < list.size(); i++) {
 				String check2 = "";
@@ -106,21 +132,24 @@ public class Note {
 			if (input == list.size()) {
 				lim.note();
 			}
-			NoteFrame nf = list.get(input);
-			System.out.println("=====================");
-			System.out.println("[수신자]" + nf.getTo());
-			System.out.println("[내용]:" + nf.getContent());
-			System.out.println("[발신자]:" + nf.getFrom());
-			System.out.println("[작성시간]" + nf.getDate());
-			System.out.println("=====================");
+			else if(input!=list.size())
+			{
+				NoteFrame nf = list.get(input);
+				System.out.println("=====================");
+				System.out.println("[수신자]" + nf.getTo());
+				System.out.println("[내용]:" + nf.getContent());
+				System.out.println("[발신자]:" + nf.getFrom());
+				System.out.println("[작성시간]" + nf.getDate());
+				System.out.println("=====================");
+				
+				sql = "" + "UPDATE NOTE SET NOTE_CHECK=? WHERE NOTE_DATE=?";
+				ps = run.co.prepareStatement(sql);
+				ps.setInt(1, 1);
+				ps.setString(2, nf.getDate());
+				ps.executeUpdate();				
+			}
 
-			sql = "" + "UPDATE NOTE SET NOTE_CHECK=? WHERE NOTE_TO=?";
-			ps = run.co.prepareStatement(sql);
-			ps.setInt(1, 1);
-			ps.setString(2, run.name);
-			ps.executeUpdate();
-
-		} catch (SQLException |IndexOutOfBoundsException e) {
+		} catch (SQLException | IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
 

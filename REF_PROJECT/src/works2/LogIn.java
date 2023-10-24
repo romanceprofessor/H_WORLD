@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class LogIn {
 
-	Scanner sc = new Scanner(System.in);
 	static LogInMethod lim = new LogInMethod();
+	Scanner sc = new Scanner(System.in);
 
 	void main() {
 		System.out.println("[1]게시판[2]쪽지[3]프로필 조회[4]회원정보 변경[5]로그아웃");

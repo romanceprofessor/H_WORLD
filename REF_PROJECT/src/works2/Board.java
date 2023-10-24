@@ -18,11 +18,11 @@ public class Board {
 	PreparedStatement ps;
 
 	String title = null;
-	String content = "";
 	String writer = null;
 	String date = null;
 
 	void writeBoard() {
+		String content = "";
 		System.out.println("제목을 입력해주세요.");
 		title = sc.nextLine();
 		System.out.println("내용을 입력해주세요.\n작성을 마치고 싶을 경우에 '종료'라고 입력해주세요.");
@@ -56,6 +56,7 @@ public class Board {
 	}
 
 	void readBoard() {
+		String content = "";
 		List list = new ArrayList();
 		String title = null;
 
@@ -98,10 +99,10 @@ public class Board {
 		}
 
 		System.out.println("[제목]" + title + "\n[내용]\n" + content + "\n[작성자]" + writer + "\n[작성시간]" + date);
-
 	}
 
 	void fixBoard() {
+
 		List list = new ArrayList();
 		String title = null;
 
@@ -190,18 +191,23 @@ public class Board {
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println("[" + (i + 1) + "]" + list.get(i));
 		}
+		System.out.println("[" + (list.size() + 1) + "]뒤로 가기");
 		int input = (sc.nextInt() - 1);
 		sc.nextLine();
-		title = (String) list.get(input);
+		if (input == list.size()) {
+			lim.board();
+		} else if (input != list.size()) {
+			title = (String) list.get(input);
 
-		sql = "DELETE FROM BOARD WHERE BOARD_TITLE='" + title + "'";
+			sql = "DELETE FROM BOARD WHERE BOARD_TITLE='" + title + "'";
 
-		try {
-			ps = run.co.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			System.out.println("정상적으로 삭제되었습니다.");
-		} catch (SQLException e) {
-			e.printStackTrace();
+			try {
+				ps = run.co.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery();
+				System.out.println("정상적으로 삭제되었습니다.");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
