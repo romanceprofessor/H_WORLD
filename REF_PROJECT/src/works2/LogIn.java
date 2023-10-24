@@ -17,7 +17,7 @@ public class LogIn {
 			lim.board();
 			break;
 		case "2":
-
+			lim.note();
 			break;
 		case "3":
 			lim.viewProfile();

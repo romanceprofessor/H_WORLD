@@ -13,6 +13,7 @@ public class LogInMethod {
 	static Run run = new Run();
 	static Board board = new Board();
 	static LogIn li = new LogIn();
+	static Note note=new Note();
 	PreparedStatement ps;
 	PreparedStatement ps2;
 	
@@ -193,4 +194,29 @@ public class LogInMethod {
 		
 		
 			}
+
+	void note()
+	{
+		System.out.println("[1]쪽지 발송[2]쪽지 확인[3]쪽지 삭제[4]뒤로 가기");
+		String input = sc.nextLine();
+		switch (input) {
+
+		case "1":
+			note.writeNote();
+			break;
+		case "2":
+			note.readNote();
+			break;
+		case "3":
+//			System.out.println("추후 업데이트 예정입니다.");
+			note.deleteNote();
+			break;
+		case "4":
+			li.main();
+			break;
+		default:
+			System.out.println("올바른 값을 입력해주세요.");
+			break;
+		}
+	}
 }
