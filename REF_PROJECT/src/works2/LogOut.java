@@ -13,7 +13,6 @@ public class LogOut {
 		String input = sc.nextLine();
 
 		switch (input) {
-
 		case "1":
 			lom.login();
 			break;

@@ -23,11 +23,11 @@ public class Board {
 
 	void writeBoard() {
 		String content = "";
-		System.out.println("제목을 입력해주세요.");
+		System.out.println("제목을 입력해주세요.(최대 길이 20자)");
 		title = sc.nextLine();
 		System.out.println("내용을 입력해주세요.\n작성을 마치고 싶을 경우에 '종료'라고 입력해주세요.");
 		String sentence;
-		while (true) {
+		while (true) { /** while문을 이용하여 개행 가능/문장을 입력받고 문단에 누적하는 형식/개행할때마다 '종료'라는 단어 조회, 포함시 break **/
 			sentence = sc.nextLine();
 			if (sentence.contains("종료")) {
 				break;
@@ -38,7 +38,7 @@ public class Board {
 		content = content.trim();
 		writer = run.name;
 		date = dateBoard(null);
-
+		/***** 입력받은 게시글의 정보를 DB에 삽입 *****/
 		String sql = "" + "INSERT INTO BOARD " + "(BOARD_TITLE,BOARD_CONTENT,BOARD_WRITER,BOARD_DATE)"
 				+ "VALUES(?,?,?,?)";
 		try {
@@ -50,6 +50,7 @@ public class Board {
 
 			ps.executeUpdate();
 			System.out.println("정상적으로 게시되었습니다.");
+			lim.board();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +68,7 @@ public class Board {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				list.add(rs.getString("BOARD_TITLE"));
+				list.add(rs.getString("BOARD_TITLE")); /** DB에 존재하는 모든 게시글의 제목 조회 **/
 			}
 			if (list.size() == 0) {
 				System.out.println("작성된 게시글이 존재하지 않습니다.");
@@ -77,28 +78,36 @@ public class Board {
 			e.printStackTrace();
 		}
 		for (int i = 0; i < list.size(); i++) {
-			System.out.println("[" + (i + 1) + "]" + list.get(i));
+			System.out.println("[" + (i + 1) + "]" + list.get(i)); /** DB에 존재하는 게시글의 제목 나열 **/
 		}
+		System.out.println("[" + (list.size() + 1) + "]뒤로 가기");
 		int input = (sc.nextInt() - 1);
 		sc.nextLine();
-		title = (String) list.get(input);
-
-		sql = "SELECT * FROM BOARD WHERE BOARD_TITLE='" + title + "'";
-
-		try {
-			ps = run.co.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				content = rs.getString("BOARD_CONTENT");
-				writer = rs.getString("BOARD_WRITER");
-				date = rs.getString("BOARD_DATE");
+		if(input==list.size())
+		{
+			lim.board();
+		}else if(input!=list.size())
+		{
+			title = (String) list.get(input);
+			
+			sql = "SELECT * FROM BOARD WHERE BOARD_TITLE='" + title + "'"; /** 입력받은 게시글의 제목으로 데이터 조회 **/
+			
+			try {
+				ps = run.co.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery();
+				
+				while (rs.next()) {
+					content = rs.getString("BOARD_CONTENT");
+					writer = rs.getString("BOARD_WRITER");
+					date = rs.getString("BOARD_DATE");
+				}
+			} catch (SQLException e) {
+				lim.board();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			
+			System.out.println("[제목]" + title + "\n[내용]\n" + content + "\n[작성자]" + writer + "\n[작성시간]" + date+"\n");
+			lim.board();			
 		}
-
-		System.out.println("[제목]" + title + "\n[내용]\n" + content + "\n[작성자]" + writer + "\n[작성시간]" + date);
 	}
 
 	void fixBoard() {
@@ -120,7 +129,7 @@ public class Board {
 				lim.board();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			lim.board();
 		}
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println("[" + (i + 1) + "]" + list.get(i));
@@ -135,7 +144,7 @@ public class Board {
 		} else if (input != list.size()) {
 			title = (String) list.get(input);
 
-			System.out.printf("수정할 제목 입력: ");
+			System.out.printf("수정할 제목을 입력해주세요.(최대 길이 20자)");
 
 			String settitle = sc.nextLine();
 			String content = "";
@@ -162,8 +171,9 @@ public class Board {
 
 				int rs = ps.executeUpdate();
 				System.out.println(rs + "건이 정상적으로 수정되었습니다.");
+				lim.board();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				lim.board();
 			}
 		}
 	}
@@ -205,6 +215,7 @@ public class Board {
 				ps = run.co.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery();
 				System.out.println("정상적으로 삭제되었습니다.");
+				lim.board();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

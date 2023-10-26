@@ -6,26 +6,27 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/***** 현재 로그아웃 상태일시 사용하는 기능들 *****/
 public class LogOutMethod {
-
 	Scanner sc = new Scanner(System.in);
 	static Run run = new Run();
 	PreparedStatement ps;
-
+	/***** 로그아웃 상태 -> 로그인하는 메소드 *****/
 	void login() {
 		System.out.println("이메일 아이디를 입력해주세요.");
 		String id = sc.nextLine();
 		System.out.println("비밀번호를 입력해주세요.");
 		String pw = sc.nextLine();
-
+		/***** 입력받은 이메일 아이디를 DB에 조회 *****/
 		String sql = "" + "SELECT * FROM WORKS WHERE PRO_EMAIL IN ?";
 		try {
 			ps = run.co.prepareStatement(sql);
 			ps.setString(1, id);
 			ResultSet rs = ps.executeQuery();
-
+			/***** 입력받은 아이디가 DB에 존재할경우 *****/
 			if (rs.next()) {
 				if (rs.getString("PRO_EMAIL").equals(id)) {
+					/***** 아이디에 해당하는 비밀번호 비교 *****/
 					if (rs.getString("PASSWORD").equals(pw)) {
 						String sql2 = "" + "SELECT PRO_NAME FROM WORKS WHERE PRO_EMAIL = " + "'" + id + "'";
 						ps = run.co.prepareStatement(sql2);
@@ -34,15 +35,17 @@ public class LogOutMethod {
 						run.name = rs2.getString(1);
 						System.out.println(run.name + "님 반갑습니다.");
 						System.out.println("로그인 성공");
-
+						/***** 접속자의 이름을 DB에 조회하여 접속 상태 변경 *****/
 						String sql3 = "UPDATE CONNECTION SET STATUS=1 WHERE PRO_NAME='" + run.name + "'";
 						ps = run.co.prepareStatement(sql3);
 						ps.executeQuery();
 						run.connect();
+						/***** 아이디는 일치하나 비밀번호가 일치하지 않을 경우 로그인 실패 *****/
 					} else if (rs.getString("PASSWORD").equals(pw) == false) {
 						System.out.println("비밀번호가 일치하지 않습니다.");
 					}
 				}
+				/***** 입력받은 아이디가 DB에 존재하지 않을 경우 *****/
 			} else if (rs.next() == false) {
 				System.out.println("아이디가 일치하지 않습니다.");
 			}
@@ -50,12 +53,30 @@ public class LogOutMethod {
 			e.printStackTrace();
 		}
 	}
-
+	/***** 회원가입 메소드 *****/
 	void signin() {
 		try {
 			System.out.print("[이름]");
 			String name = sc.nextLine();
-
+			/***** 입력 받은 이름이 DB에 존재하는지 확인 *****/
+			String sql0=""+"SELECT * FROM WORKS WHERE PRO_NAME IN ?";
+			try {
+				ps = run.co.prepareStatement(sql0);
+				ps.setString(1, name);
+				ResultSet rs = ps.executeQuery();
+				
+				if(rs.next())
+				{
+					System.out.println("이미 존재하는 이름입니다.");
+					return;
+				}
+				else if(rs.next()==false)
+				{
+					
+				}			
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			System.out.println("[소속]1.인사 2.경영 3.기획 4.개발 5.감사");
 			String team = null;
 			while (true) {
@@ -85,6 +106,7 @@ public class LogOutMethod {
 			String grade = null;
 			while (true) {
 				int int_input = sc.nextInt();
+				sc.nextLine();
 				if (int_input == 1) {
 					grade = "사원";
 					break;
@@ -148,6 +170,7 @@ public class LogOutMethod {
 			System.out.println("[이름]" + name + "\n[소속]" + team + "\n[직급]" + grade + "\n[연락처]" + number + "\n[이메일]"
 					+ email + "\n위 정보가 맞습니까?\n[1]네[2]아니오");
 			int input = sc.nextInt();
+			/***** 입력 받은 정보를 종합하여 DB에 삽입 *****/
 			if (input == 1) {
 				String sql = "" + "INSERT INTO WORKS" + "(PRO_NAME,PRO_TEAM,PRO_GRADE,PRO_NUMBER,PRO_EMAIL,PASSWORD)"
 						+ "VALUES(?,?,?,?,?,?)";
@@ -181,7 +204,7 @@ public class LogOutMethod {
 			sc.nextLine();
 		}
 	}
-
+	/***** 비밀번호 찾기 메소드 *****/
 	void findPW() {
 		System.out.println("이메일 아이디를 입력해주세요.");
 		String email = sc.nextLine();
@@ -196,7 +219,7 @@ public class LogOutMethod {
 			}
 			System.out.print(".");
 		}
-
+		/***** 입력받은 아이디와 이름으로 일치하는 비밀번호를 DB에서 조회 *****/
 		String sql = "" + "SELECT PASSWORD " + "FROM WORKS " + "WHERE PRO_EMAIL=" + "'" + email + "'" + " AND PRO_NAME="
 				+ "'" + name + "'";
 

@@ -26,7 +26,7 @@ public class Note {
 		
 		System.out.println("수신자 이름을 정확하게 입력해주세요.");
 		to = sc.nextLine();
-		
+		/***** 입력한 수신자 이름이 존재하는지 여부를 DB에 조회 *****/
 		String sql2=""+"SELECT * FROM WORKS WHERE PRO_NAME IN ?";
 		try {
 			ps=run.co.prepareStatement(sql2);
@@ -45,7 +45,7 @@ public class Note {
 		}
 		//쪽지 수신자가 데이터베이스에 존재하는지 여부 판단
 		
-		
+		/***** 게시판과 비슷하게 while문을 이용한 내용 작성 *****/
 		System.out.println("내용을 입력해주세요.\n작성을 마치고 싶을 경우에 '종료'라고 입력해주세요.");
 		String sentence;
 		while (true) {
@@ -83,7 +83,7 @@ public class Note {
 		
 		List<NoteFrame> list = new ArrayList<NoteFrame>();
 		int check = 0;
-
+		/***** 접속자의 이름을 수신자로 설정한 쪽지가 있는지 확인 *****/
 		String sql = "SELECT * FROM NOTE WHERE NOTE_TO = ?";
 
 		try {
@@ -142,7 +142,7 @@ public class Note {
 				System.out.println("[작성시간]" + nf.getDate());
 				System.out.println("=====================");
 				
-				sql = "" + "UPDATE NOTE SET NOTE_CHECK=? WHERE NOTE_DATE=?";
+				sql = "" + "UPDATE NOTE SET NOTE_CHECK=? WHERE NOTE_DATE=?"; /** 확인한 쪽지의 확인 여부 업데이트 **/
 				ps = run.co.prepareStatement(sql);
 				ps.setInt(1, 1);
 				ps.setString(2, nf.getDate());

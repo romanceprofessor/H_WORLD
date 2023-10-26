@@ -10,33 +10,34 @@ public class Run {
 
 	static Connection co;
 
-	static boolean LogStatus;
+	static boolean LogStatus; /** 현재 로그인 상태 **/
 	static LogOut lo = new LogOut();
 	static LogIn li = new LogIn();
-	static String name;
+	static String name; /**접속자의 이름**/
 
 	public static void main(String[] args) {
 
 		basic();
-		LogStatus = false;
+		LogStatus = false; /** 처음 접속시 로그아웃 상태 **/
 		while (true) {
 			if (LogStatus == true) {
-				li.main();
+				li.main(); /** 로그인 상태가 true일 경우 로그인 클래스 **/
 			} else if (LogStatus == false) {
-				lo.main();
+				lo.main(); /** 로그인 상태가 false일 경우 로그아웃 클래스 **/
 			}
 		}
 	}
-
-	static void basic() {
+	/***** DB 접속 *****/
+	static Connection basic() {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
 			co = DriverManager.getConnection("jdbc:oracle:thin:@192.168.200.128:1521/orcl", "byte1", "tiger");
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+		return co;
 	}
-
+	/***** 로그인 상태에서 메소드 호출시 로그아웃, 로그아웃 상태에서 메소드 호출시 로그인 *****/
 	static void connect() {
 		PreparedStatement ps;
 

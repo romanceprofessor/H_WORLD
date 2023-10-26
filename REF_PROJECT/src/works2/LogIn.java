@@ -1,5 +1,6 @@
 package works2;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class LogIn {
@@ -7,7 +8,7 @@ public class LogIn {
 	static LogInMethod lim = new LogInMethod();
 	Scanner sc = new Scanner(System.in);
 
-	void main() {
+	void main()  {
 		System.out.println("[1]게시판[2]쪽지[3]프로필 조회[4]회원정보 변경[5]로그아웃");
 		String input = sc.nextLine();
 

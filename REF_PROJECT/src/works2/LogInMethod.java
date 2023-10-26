@@ -7,28 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/***** 현재 로그인 상태일시 사용하는 기능들 *****/
 public class LogInMethod {
 
 	Scanner sc = new Scanner(System.in);
 	static Run run = new Run();
 	static Board board = new Board();
 	static LogIn li = new LogIn();
+	static LogOut lo=new LogOut();
 	static Note note = new Note();
 	PreparedStatement ps;
 	PreparedStatement ps2;
-
+	/***** 로그인 상태 -> 로그아웃하는 메소드 *****/
 	void logout() {
 		String sql = "UPDATE CONNECTION SET STATUS=0 WHERE PRO_NAME='" + run.name + "'";
 		try {
 			ps = run.co.prepareStatement(sql);
 			ps.executeQuery();
-			run.connect();
+			run.connect(); /** Run클래스에 connect 함수 호출, 해당 함수는 로그인 상태에서 호출시 로그아웃으로 업데이트 **/
 			System.out.println("정상적으로 로그아웃되었습니다.");
+			System.out.println(run.LogStatus);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-
+	/***** 회원정보 변경 메소드 *****/
 	void updateProfile() {
 		String name = null;
 		String team = null;
@@ -36,7 +39,7 @@ public class LogInMethod {
 		String number = null;
 		String email = null;
 		String password = null;
-
+		/***** 접속자의 이름에 맞는 데이터를 DB를 통해 조회 *****/
 		String sql = "SELECT * FROM WORKS WHERE PRO_NAME='" + run.name + "'";
 
 		try {
@@ -56,14 +59,14 @@ public class LogInMethod {
 		}
 
 		System.out.println("어떤 정보를 수정하시겠습니까?");
-		System.out.println("[이름]" + name + "\n[소속]" + team + "\n[직급]" + grade + "\n[연락처]" + number + "\n[이메일]" + email);
+		System.out.println("[이름]" + name + "\n[소속]" + team + "\n[직급]" + grade + "\n[연락처]" + number + "\n[이메일]" + email); /** 접속자의 현재 정보 조회 및 어떤 정보 수정할지 선택 **/
 		String input = sc.nextLine();
 		String input2;
 		int x = 0;
 		String[] subject = { "소속", "직급", "연락처", "이메일" };
 		String[] subject2 = { "team", "grade", "number", "email" };
 
-		if (input.equals("이름")) {
+		if (input.equals("이름")) { /** 이름을 수정할 경우/이름을 통해 DB에 접속하는 경우가 많기 때문에 따로 조치 **/
 			System.out.println("바꿀 내용을 입력해주세요.");
 			input2 = sc.nextLine();
 
@@ -80,7 +83,7 @@ public class LogInMethod {
 				e.printStackTrace();
 			}
 		} else {
-			for (int i = 0; i < subject.length; i++) {
+			for (int i = 0; i < subject.length; i++) { /** 소속,직급,연락처,이메일중 선택 **/
 				if (input.contains(subject[i])) {
 					System.out.println("바꿀 내용을 입력해주세요.");
 					input2 = sc.nextLine();
@@ -112,15 +115,12 @@ public class LogInMethod {
 							check = true;
 						}
 					}
-					if(check==false)
-					{
+					if (check == false) {
 						System.out.println("올바른 값을 입력해주세요.");
 						return;
-					}
-					else if(check==true)
-					{
-						String sql2 = "UPDATE WORKS SET PRO_" + subject2[i] + "='" + input2 + "' WHERE PRO_NAME='" + name
-								+ "'";
+					} else if (check == true) {
+						String sql2 = "UPDATE WORKS SET PRO_" + subject2[i] + "='" + input2 + "' WHERE PRO_NAME='"
+								+ name + "'";
 						String sql3 = "UPDATE CONNECTION SET PRO_" + subject2[i] + "='" + input2 + "' WHERE PRO_NAME='"
 								+ name + "'";
 						try {
@@ -130,21 +130,21 @@ public class LogInMethod {
 							break;
 						} catch (SQLException e) {
 							e.printStackTrace();
-						}						
+						}
 					}
 
-				} 
+				}
 			}
 
 		}
 
 	}
-
+	/***** 게시판 메소드 *****/
 	void board() {
 		System.out.println("[1]게시글 작성[2]게시글 조회[3]게시글 수정[4]게시글 삭제[5]뒤로 가기");
 		String input = sc.nextLine();
 		switch (input) {
-
+		/***** 게시판 클래스 별도 이용 *****/
 		case "1":
 			board.writeBoard();
 			break;
@@ -165,54 +165,19 @@ public class LogInMethod {
 			break;
 		}
 	}
-
+	/***** 프로필 조회 메소드 *****/
 	void viewProfile() {
-		List<Profile> list = new ArrayList<Profile>();
-		String[] team1 = { "인사", "경영", "기획", "개발", "감사" };
-		String[] grade1 = { "사원", "주임", "대리", "과장", "차장", "부장" };
-
-		System.out.println("[1]인사\n[2]경영\n[3]기획\n[4]개발\n[5]감사\n[6]뒤로가기");
-		int input = sc.nextInt();
-		sc.nextLine();
-		if (input == 6) {
-			li.main();
-		} else if (input != 6) {
-			String sql = "SELECT * FROM WORKS WHERE PRO_TEAM='" + team1[input - 1] + "'";
-
-			try {
-				ps = run.co.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery();
-
-				while (rs.next()) {
-					Profile pf = new Profile();
-					pf.setName(rs.getString(1));
-					pf.setTeam(rs.getString(2));
-					pf.setGrade(rs.getString(3));
-					pf.setNumber(rs.getString(4));
-					pf.setEmail(rs.getString(5));
-					list.add(pf);
-				}
-				for (int i = 0; i < list.size(); i++) {
-					Profile profile = list.get(i);
-					System.out.println("[이름]" + profile.getName());
-					System.out.println("[소속]" + profile.getTeam());
-					System.out.println("[직급]" + profile.getGrade());
-					System.out.println("[연락처]" + profile.getNumber());
-					System.out.println("[이메일]" + profile.getEmail());
-					System.out.println("============================");
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		try {
+			Filter.main(); /** 프로필 조회 클래스 별도 이용 **/
+		} catch (Exception e) {			
 		}
 	}
-
+	/***** 쪽지 메소드 *****/
 	void note() {
 		System.out.println("[1]쪽지 발송[2]쪽지 확인[3]쪽지 삭제[4]뒤로 가기");
 		String input = sc.nextLine();
 		switch (input) {
-
+		/** 쪽지 클래스 별도 이용 **/
 		case "1":
 			note.writeNote();
 			break;
