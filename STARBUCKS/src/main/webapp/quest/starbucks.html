@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Welcome to Starbucks</title>
+	<link rel="stylesheet" href="./starbucks.css">
+	<script src="./starbucks.js"></script>
+</head>
+
+<body style="width:1420px; margin-left: auto; margin-right:auto;">
+	<header style="margin-left: auto; margin-right:auto;">
+		<h1>스타벅스에 오신 것을 환영합니다.</h1>
+	</header>
+
+	<main style="margin-top:50px;">
+		<div class="parent">
+			<div class="child">
+				<img src="./coffee_1.jpg">
+				<input class="button_style" type="button" value="선택" onclick="coffee1()">
+			</div>
+			<div class="child">
+				<img src="./coffee_2.jpg">
+				<input class="button_style" type="button" value="선택" onclick="coffee2()">
+			</div>
+			<div class="child">
+				<img src="./coffee_3.jpg">
+				<input class="button_style" type="button" value="선택" onclick="coffee3()">
+			</div>
+			
+		</div>
+		<div style="display:flex;">
+			<textarea class="textarea_bills" id="bills" readonly></textarea>
+		</div>
+		
+		<div>
+			<textarea value="TOTAL" id="amount" class="textarea_price" readonly>
+			
+			</textarea>
+		</div>
+
+	</main>
+
+</body>
+
+</html>
