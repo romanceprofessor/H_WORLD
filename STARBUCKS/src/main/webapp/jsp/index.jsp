@@ -7,6 +7,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>스타벅스</title>
+		<link href="<c:url value='/css/popup.css'/>" rel="stylesheet">
 	</head>
 	<body>
 		<div>
@@ -26,7 +27,10 @@
 		</c:if>
 		<c:if test="${ null ne sessionScope.userName }">
 			<div>
-				<span>${userName }님 로그인중</span>
+				<span>${userName }님 </span>
+				<span>
+					<input type="button" id="btnLogout" value="로그아웃">
+				</span>
 			</div>
 			<div>
 				<ul>
@@ -34,10 +38,58 @@
 				</ul>
 			</div>
 		</c:if>
+		
+		<!-- https://chlolisher.tistory.com/100 -->
+		<div id="popup_layer" style="display: none">
+		  <div class="popup_box">
+		      <!--팝업 컨텐츠 영역-->
+		      <div class="popup_cont">
+		          <h2>BlackFridayGift</h2>
+		          <span>
+					<img style="width:50%" id="imgBlackFridayGift">
+				  </span>
+		      </div>
+		      <!--팝업 버튼 영역-->
+		      <div class="popup_btn">
+		          <!--하루동안 보지않기-->
+		          <a id="chk_today" href="javascript:closeToday();" class="close_day">Do not open for a day</a> 
+		          <!--7일간 보지않기-->
+		          <!-- <a id="chk_today" href="javascript:closeToday();" class="close_day">Do not open for 7 days</a>-->
+		          <a href="javascript:closePop();">Close</a>
+		      </div>
+		  </div>
+		</div>
+		
 		<script>
-			document.getElementById('btnLogin').addEventListener('click',function(){
-				document.getElementById('frmLogin').submit();
-			});
+			let btnLogin = document.getElementById('btnLogin');
+			if ( null != btnLogin ) {
+				btnLogin.addEventListener('click',function(){
+					document.getElementById('frmLogin').submit();
+				});
+			}
+			let btnLogout = document.getElementById('btnLogout');
+			if ( null != btnLogout ) {
+				btnLogout.addEventListener('click',function(){
+					location.href = "<c:url value='/logout.star'/>";
+				});
+			}
+			
+			let getCookie = function(name) {
+				var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+				return value? value[2] : null;
+			};
+			
+			let closePop = function() { 
+				document.getElementById("popup_layer").style.display = "none";
+			};
+
+			let blackFridayGift = getCookie('BlackFridayGift');
+			if ( null != blackFridayGift ) {
+				document.getElementById("popup_layer").style.display = "block";
+				document.getElementById("imgBlackFridayGift").src
+				= "<c:url value='/images/cookie/" + blackFridayGift + ".png'/>"
+			}
+
 		</script>
 		
 		

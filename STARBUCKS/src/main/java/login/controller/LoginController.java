@@ -15,7 +15,11 @@ public class LoginController {
 	public static void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		String uri = req.getRequestURI();
 		if ( -1 < uri.indexOf("/login.star") ) {
-			LoginModel.login(req);
+			LoginModel.login(req, res);
+			req.getRequestDispatcher("/jsp/index.jsp").forward(req, res);
+		}
+		if ( -1 < uri.indexOf("/logout.star") ) {
+			LoginModel.logout(req, res);
 			req.getRequestDispatcher("/jsp/index.jsp").forward(req, res);
 		}
 	}
