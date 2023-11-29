@@ -12,7 +12,3 @@ function removeBorderStyle(){
 		img.style.removeProperty('border');
 	});
 }
-document.getElementById('btnOrder').addEventListener('click',function(){
-	document.getElementById('amount').value = document.getElementById('count').value;
-	document.getElementById('orderForm').submit();
-});

@@ -1,6 +1,7 @@
 package starbucks.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,13 @@ public class StarbucksController {
 		String uri = req.getRequestURI();
 		if ( -1 < uri.indexOf("/menu.star") ) {
 			req.getRequestDispatcher("/jsp/starbucks/menu.jsp").forward(req, res);
+		}
+		if ( -1 < uri.indexOf("/stock.star") ) {
+			PrintWriter out = res.getWriter();
+			res.setContentType("application/json");
+			res.setCharacterEncoding("UTF-8");
+			out.print(StarbucksModel.checkStock(req));
+			out.flush();
 		}
 		if ( -1 < uri.indexOf("/order.star") ) {
 			StarbucksModel.makeFood(req);

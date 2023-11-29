@@ -8,6 +8,7 @@
 		<meta charset="UTF-8">
 		<title>스타벅스</title>
 		<link href="<c:url value='/css/starbucks.css'/>" rel="stylesheet">
+		<script src="<c:url value='/js/jquery-3.7.1.min.js'/>"></script>
 	</head>
 	<body>
 		<div>
@@ -41,5 +42,30 @@
 			<input type="hidden" id="amount" name="amount">
 		</form>
 		<script src="<c:url value='/js/starbucks_menu.js'/>"></script>
+		<script>
+			document.getElementById('btnOrder').addEventListener('click',function(){
+			
+				let json = new Object();
+				json.param = new Object();
+				json.param.menu = document.getElementById('menu').value;
+				json.param.amount = document.getElementById('count').value;
+				
+				$.ajax({
+				  method: "POST",
+				  url: "<c:url value='/starbucks/stock.star'/>",
+				  data: JSON.stringify(json),
+				  contentType: "application/json",
+				  async: false
+				}).done(function(json) {
+					if ( 1 == json.resultCode ) {
+						document.getElementById('amount').value = document.getElementById('count').value;
+						document.getElementById('orderForm').submit();
+					} else {
+						alert('주문 가능 개수를 초과하였습니다.(최대수량:' +json.data.stock+ '개)');
+					}
+				});
+				
+			});
+		</script>
 	</body>
 </html>

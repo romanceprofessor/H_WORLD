@@ -1,9 +1,42 @@
 package starbucks.model;
 
-import javax.servlet.ServletContext;
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
+import cookie.CookieMaker;
+
 public class StarbucksModel {
+	
+	public static String checkStock(HttpServletRequest req) throws JsonSyntaxException, JsonIOException, IOException {
+		JsonObject returnJson = null;
+		JsonObject json = new Gson().fromJson(req.getReader(), JsonObject.class);
+		System.out.println(json);
+		JsonObject paramJson= (JsonObject)json.get("param");
+		String menu = paramJson.get("menu").getAsString();
+		String amount = paramJson.get("amount").getAsString();
+		if ( "coffee".equals(menu) ) {
+			if ( 50 < Integer.parseInt(amount) ) {
+				returnJson = new JsonObject();
+				returnJson.addProperty("resultCode", "0");
+				JsonObject jo = new JsonObject();
+				jo.addProperty("stock", 50);
+				returnJson.add("data", jo);
+			} else {
+				returnJson = new JsonObject();
+				returnJson.addProperty("resultCode", "1");
+			}
+		} else {
+			returnJson = new JsonObject();
+			returnJson.addProperty("resultCode", "1");
+		}
+		return new Gson().toJson(returnJson);
+	}
 	
 	public static void makeFood(HttpServletRequest req) {
 		String menu = req.getParameter("menu");
